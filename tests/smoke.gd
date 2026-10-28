@@ -1,0 +1,38 @@
+extends SceneTree
+const State = preload("res://scripts/world_state.gd")
+const Saves = preload("res://scripts/save_store.gd")
+
+func _initialize() -> void:
+	var s = State.new()
+	var first: Dictionary = s.trees[0]
+	var p = Vector2(first.x, first.y)
+	var original_count = s.trees.size()
+	s.command("chop", p + Vector2(500, 0), p)
+	assert(s.trees[0].hp == 3, "Out of reach must be rejected")
+	for i in range(3):
+		s.command("chop", p + Vector2(40, 0), p)
+	assert(s.wood == 5 and s.trees.size() == original_count - 1)
+	var spot = Vector2(1224, 888)
+	s.command("place", spot + Vector2(80, 0), spot)
+	assert(s.buildings.size() == 1)
+	s.command("place", spot + Vector2(80, 0), spot)
+	assert(s.buildings.size() == 1, "Overlapping placement rejected")
+	s.command("interact", spot + Vector2(80, 0), spot)
+	assert(s.wood == 0 and s.buildings[0].wood == 5)
+	s.command("interact", spot + Vector2(80, 0), spot)
+	assert(s.buildings[0].work == 0, "Work waits for materials")
+	s.wood = 10
+	s.command("interact", spot + Vector2(80, 0), spot)
+	for i in range(4):
+		s.command("interact", spot + Vector2(80, 0), spot)
+	assert(s.buildings[0].work == 4 and s.wood == 3)
+	Saves.PATH = ProjectSettings.globalize_path("res://").path_join(".godot/test-save.json")
+	assert(Saves.save_game(s.snapshot(spot)) == OK)
+	var restored = State.new()
+	assert(restored.restore(Saves.load_game()))
+	assert(restored.wood == 3 and restored.buildings[0].work == 4)
+	assert(restored.trees.size() == s.trees.size())
+	assert(not restored.restore({"version": 999}))
+	DirAccess.remove_absolute(Saves.PATH)
+	print("PASS: reach, chopping, placement, overlap, partial delivery, construction, save/load")
+	quit()
