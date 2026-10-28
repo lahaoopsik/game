@@ -1,6 +1,13 @@
 extends CharacterBody2D
+const Art = preload("res://scripts/art.gd")
 var swing: float = 0.0
 var facing = Vector2.DOWN
+var animation_time = 0.0
+var sprite: Sprite2D
+var weapon: Node2D
+const WALK_SPEED = 230.0
+const RUN_MULTIPLIER = 1.4
+var input_locked = false
 
 func _ready() -> void:
 	var shape = CollisionShape2D.new()
@@ -8,31 +15,62 @@ func _ready() -> void:
 	circle.radius = 13
 	shape.shape = circle
 	add_child(shape)
-	z_index = 10
+	sprite = Sprite2D.new()
+	var pixels = ShaderMaterial.new()
+	pixels.shader = preload("res://assets/art/pixel.gdshader")
+	sprite.material = pixels
+	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	sprite.scale = Vector2.ONE * 0.30
+	sprite.position = Vector2(0, -37)
+	add_child(sprite)
+	weapon = preload("res://scripts/weapon.gd").new()
+	add_child(weapon)
+	var glow_image = GradientTexture2D.new()
+	var gradient = Gradient.new()
+	gradient.set_color(0, Color.WHITE)
+	gradient.set_color(1, Color(1, 1, 1, 0))
+	glow_image.gradient = gradient
+	glow_image.fill = GradientTexture2D.FILL_RADIAL
+	glow_image.fill_from = Vector2(0.5, 0.5)
+	glow_image.fill_to = Vector2(0.5, 0.0)
+	glow_image.width = 128
+	glow_image.height = 128
+	var light = PointLight2D.new()
+	light.texture = glow_image
+	light.texture_scale = 2.4
+	light.color = Color("a9eee3")
+	light.energy = 0.65
+	light.position = Vector2(18, -20)
+	add_child(light)
 
 func _physics_process(delta: float) -> void:
 	var direction = Vector2(float(Input.is_physical_key_pressed(KEY_D) or Input.is_physical_key_pressed(KEY_RIGHT)) - float(Input.is_physical_key_pressed(KEY_A) or Input.is_physical_key_pressed(KEY_LEFT)), float(Input.is_physical_key_pressed(KEY_S) or Input.is_physical_key_pressed(KEY_DOWN)) - float(Input.is_physical_key_pressed(KEY_W) or Input.is_physical_key_pressed(KEY_UP)))
-	velocity = direction.normalized() * 230
+	var running = Input.is_physical_key_pressed(KEY_SHIFT)
+	if input_locked:
+		direction = Vector2.ZERO
+	velocity = direction.normalized() * WALK_SPEED * (RUN_MULTIPLIER if running else 1.0)
 	if direction.length() > 0:
 		facing = direction.normalized()
 	move_and_slide()
 	position = position.clamp(Vector2(25, 25), Vector2(2375, 1775))
 	swing = maxf(0, swing - delta)
+	animation_time += delta * (RUN_MULTIPLIER if running else 1.0)
+	var row = 1
+	if absf(facing.x) > absf(facing.y):
+		row = 3
+	elif facing.y < 0:
+		row = 2
+	var column = int(animation_time * 8.0) % 4 if velocity.length() > 1 else 0
+	sprite.texture = Art.frame(column, row)
+	sprite.flip_h = row == 3 and facing.x < 0
+	sprite.position.y = -37 + (sin(animation_time * 2.5) * 0.7 if velocity.length() < 1 else 0.0)
+	if weapon.progress >= 1.0:
+		weapon.direction = facing
+	sprite.rotation = sin(weapon.progress * PI) * 0.10 if weapon.progress < 1.0 else 0.0
 	queue_redraw()
 
 func _draw() -> void:
 	draw_ellipse_shadow()
-	draw_circle(Vector2(0, -12), 15, Color("405b79"))
-	draw_circle(Vector2(0, -30), 12, Color("f3d1a6"))
-	draw_arc(Vector2(0, -34), 12, PI, TAU, 12, Color("613f32"), 7)
-	draw_line(Vector2(-7, 0), Vector2(-7, 7), Color("473d42"), 7)
-	draw_line(Vector2(7, 0), Vector2(7, 7), Color("473d42"), 7)
-	var hand = Vector2(20, -17)
-	if swing > 0:
-		hand += facing * 13
-		draw_arc(Vector2.ZERO, 45, -1.4, 1.0, 20, Color(0.7, 1, 1, 0.7), 3)
-	draw_line(hand + Vector2(-5, 10), hand + Vector2(2, -14), Color("b9905b"), 4)
-	draw_circle(hand + Vector2(5, -12), 8, Color("98f4ea"))
 
 func draw_ellipse_shadow() -> void:
 	draw_set_transform(Vector2(0, 6), 0, Vector2(1, 0.4))

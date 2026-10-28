@@ -4,27 +4,26 @@ const WORLD_SIZE = Vector2(2400, 1800)
 const GRID = 48
 const COST = 12 # Temporary prototype balance, not a final game rule.
 const REACH = 110.0
+const Layout = preload("res://scripts/valley_layout.gd")
+const Terrain = preload("res://scripts/terrain_grid.gd")
+var terrain = Terrain.new()
 var wood: int = 0
 var trees: Array = []
 var buildings: Array = []
 var next_id: int = 100
 
 func _init() -> void:
-	var rng = RandomNumberGenerator.new()
-	rng.seed = 8042
-	for i in range(65):
-		var p = Vector2(rng.randf_range(110, 2290), rng.randf_range(120, 1650))
-		if p.distance_to(Vector2(1200, 900)) < 160 or absf(p.x - river_x(p.y)) < 95:
-			continue
+	for i in range(Layout.TREES.size()):
+		var p: Vector2 = Layout.TREES[i]
 		trees.append({"id": i, "x": p.x, "y": p.y, "hp": 3})
 
 static func river_x(y: float) -> float:
-	return 390 + sin(y / 240.0) * 100
+	return Layout.river_x(y)
 
 func can_place(p: Vector2) -> bool:
 	if p.x < 72 or p.y < 72 or p.x > WORLD_SIZE.x - 72 or p.y > WORLD_SIZE.y - 72:
 		return false
-	if absf(p.x - river_x(p.y)) < 105:
+	if terrain.material_at(Vector2i((p / Terrain.CELL).floor())) == Terrain.Kind.WATER:
 		return false
 	for t in trees:
 		if Vector2(t.x, t.y).distance_to(p) < 65:
@@ -73,7 +72,7 @@ func command(action: String, actor: Vector2, target: Vector2) -> String:
 	return "Неизвестная команда"
 
 func snapshot(player_position: Vector2) -> Dictionary:
-	return {"version": 1, "wood": wood, "trees": trees.duplicate(true), "buildings": buildings.duplicate(true), "next_id": next_id, "player": [player_position.x, player_position.y]}
+	return {"version": 1, "layout": Layout.ID, "terrain": terrain.snapshot(), "wood": wood, "trees": trees.duplicate(true), "buildings": buildings.duplicate(true), "next_id": next_id, "player": [player_position.x, player_position.y]}
 
 func restore(data: Dictionary) -> bool:
 	if data.get("version") != 1 or not data.get("trees") is Array or not data.get("buildings") is Array:
@@ -91,7 +90,14 @@ func restore(data: Dictionary) -> bool:
 		if not b.has_all(["wood", "work"]):
 			return false
 	wood = maxi(0, int(data.get("wood", 0)))
-	trees = data.trees.duplicate(true)
+	terrain.restore(data.get("terrain", {}))
+	if data.get("layout", "") == Layout.ID:
+		trees = data.trees.duplicate(true)
+	else:
+		# Old prototype forest is replaced; inventory and buildings remain intact.
+		trees = get_script().new().trees
+		for b in data.buildings:
+			trees = trees.filter(func(t): return Vector2(t.x, t.y).distance_to(Vector2(b.x, b.y)) > 90)
 	buildings = data.buildings.duplicate(true)
 	next_id = int(data.get("next_id", 100))
 	return true
