@@ -1,6 +1,7 @@
 extends CanvasLayer
 signal inventory_toggled(opened: bool)
 const FONT = preload("res://assets/fonts/PressStart2P-Regular.ttf")
+const INITIAL_SLOTS = 9
 var resources: Label
 var inventory_count: Label
 var message: Label
@@ -37,7 +38,7 @@ func _ready() -> void:
 	var row = HBoxContainer.new()
 	row.add_theme_constant_override("separation", 7)
 	bar.add_child(row)
-	for i in range(9):
+	for i in range(INITIAL_SLOTS):
 		var slot = make_slot(i, true)
 		row.add_child(slot)
 	message = label("Добудь дерево и построй верстак", 10)
@@ -56,7 +57,7 @@ func _ready() -> void:
 	instructions.add_theme_constant_override("line_spacing", 12)
 	help_panel.add_child(instructions)
 	help_panel.hide()
-	inventory_panel = panel(Vector2(330, 195), Vector2(620, 410))
+	inventory_panel = panel(Vector2(330, 280), Vector2(620, 210))
 	inventory_panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	var inventory = VBoxContainer.new()
 	inventory.add_theme_constant_override("separation", 20)
@@ -67,7 +68,7 @@ func _ready() -> void:
 	grid.add_theme_constant_override("h_separation", 7)
 	grid.add_theme_constant_override("v_separation", 7)
 	inventory.add_child(grid)
-	for i in range(27):
+	for i in range(INITIAL_SLOTS):
 		grid.add_child(make_slot(i, false))
 	inventory.add_child(label("TAB / ESC — ЗАКРЫТЬ", 10))
 	inventory_panel.hide()

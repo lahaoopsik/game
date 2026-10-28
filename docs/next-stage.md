@@ -6,6 +6,8 @@
   Player builds on existing terrain and cannot manually change height.
 - Pixel fantasy interface: health, bond capacity, clock, active companion;
   nine item slots below; Tab inventory.
+- Initial inventory has nine shared slots, not nine extra hotbar slots.
+  Future backpacks expand capacity; bonuses and crafting are not decided.
 - Health, bond capacity and companion display are placeholders until those
   gameplay systems exist. Current real inventory resource is wood.
 
