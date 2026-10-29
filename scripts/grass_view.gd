@@ -17,6 +17,10 @@ func _process(delta: float) -> void:
 
 func _draw() -> void:
 	for clump in state.grass:
+		var screen=get_viewport_transform()*Vector2(clump.x,clump.y)
+		if not Rect2(Vector2(-60,-60),get_viewport_rect().size+Vector2(120,120)).has_point(screen):
+			continue
 		var sway = 2 if sin(time * 1.5 + clump.x * 0.03) > 0.5 else 0
-		var p = Vector2(clump.x - 16 + sway, clump.y - 44)
-		draw_texture_rect(textures[clump.variant], Rect2(p, Vector2(32, 48)), false)
+		var size=(Vector2(32,48)*float(clump.get("size",0.7))/2).round()*2
+		var p = Vector2(clump.x - size.x/2 + sway, clump.y - size.y+4)
+		draw_texture_rect(textures[clump.variant], Rect2(p, size), false)

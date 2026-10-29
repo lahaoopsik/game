@@ -1,0 +1,7 @@
+# Cliffs v1
+
+Built-in ImageGen. Final asset: assets/art/cliffs-v1.png. Runtime crops eight tile regions, removes atlas border with a 6 source-pixel inset, reduces each to 24x24 with nearest filtering and draws front faces, side faces and ramps on fixed terrain edges. No copied Stardew assets.
+
+Prompt:
+
+Original cozy fantasy RPG pixel-art terrain TILE ATLAS. Exact 4 columns x 2 rows, eight equal square tiles flush grid, no gaps no labels, no perspective scenery. Opaque background every tile. Warm ochre sandstone and mossy olive grassy upper rims, clearly chunky native 24x24 pixel tile style, dark crevices, upper-left light, shaded bases, hand-pixel clusters no smooth gradients. Row 1: four horizontally seamless FRONT CLIFF FACE variations, each full tile ochre rocky vertical face, grass cap top 3 pixels, rounded irregular rocks with varied cracks and small moss pockets, soft dark lower rim. These four tiles must line up left/right to form a long horizontal terrace wall. Row 2 col1: LEFT-facing cliff side vertical texture darker stone with moss at left edge; col2 RIGHT-facing cliff side with grass right edge; col3 broad dirt-and-stone RAMP with several uneven stone steps facing viewer, grass only along sides; col4 grass topped rounded rocky CORNER joining front and side. Entire artwork functional tile textures with no isolated objects. Original artwork inspired by cozy farming RPG readability and volumetric rocks.

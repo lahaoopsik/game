@@ -129,14 +129,24 @@ const PATHS = [
 	[Vector2(1450, 2230), Vector2(1850, 2430), Vector2(2200, 2440), Vector2(2600, 2480), Vector2(3120, 2470)]]
 
 static func grass_clumps() -> Array:
+	# Fixed staggered distribution across the authored meadows, not dense prefab patches.
 	var clumps: Array = []
-	for patch_index in range(GRASS_PATCHES.size()):
-		for row in range(5):
-			for column in range(7):
-				var offset = Vector2((column - 3) * 26 + (row % 2) * 12, (row - 2) * 20)
-				if (offset / Vector2(95, 48)).length_squared() < 1:
-					var p: Vector2 = GRASS_PATCHES[patch_index] + offset
-					clumps.append({"id": "%d:%d:%d" % [patch_index, row, column], "x": p.x, "y": p.y, "variant": (column + row) % 4})
+	for row in range(2,44):
+		for column in range(2,59):
+			var code=column*37+row*71
+			if code%7==0:
+				continue
+			var p=Vector2(column*70+(row%2)*35+(code%49)-24,row*70+((code*13)%43)-21)
+			if is_village_reserved(p):
+				continue
+			var on_path=false
+			for route in PATHS:
+				for i in range(route.size()-1):
+					if p.distance_to(Geometry2D.get_closest_point_to_segment(p,route[i],route[i+1]))<65:
+						on_path=true
+			if on_path:
+				continue
+			clumps.append({"id":"meadow:%d:%d" % [column,row],"x":p.x,"y":p.y,"variant":code%4,"size":0.55+float(code%5)*0.08})
 	return clumps
 const FLOWER_BEDS = [Vector2(950, 790), Vector2(1040, 730), Vector2(1450, 800), Vector2(1530, 870), Vector2(820, 1190), Vector2(1370, 1260), Vector2(670, 790), Vector2(1360, 2130), Vector2(1650, 2330), Vector2(2030, 2530), Vector2(2810, 2170), Vector2(3250, 2410)]
 const BUSHES = [Vector2(810, 680), Vector2(1000, 540), Vector2(1370, 670), Vector2(1630, 690), Vector2(1970, 980), Vector2(940, 1400), Vector2(1850, 1530), Vector2(200, 730)]

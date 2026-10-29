@@ -85,6 +85,23 @@ func elevation_at(cell: Vector2i) -> int:
 	return authored_elevation(Vector2(cell * CELL) + Vector2.ONE * 24)
 
 func authored_elevation(p: Vector2) -> int:
+	# Broad connected terraces frame the playable valley; paths remain ramps.
+	if in_patch(p,Vector2(4020,390),Vector2(380,410)):
+		return 4
+	if in_patch(p,Vector2(3800,530),Vector2(530,530)):
+		return 3
+	if in_patch(p,Vector2(3300,270),Vector2(620,320)):
+		return 2
+	if in_patch(p,Vector2(3000,380),Vector2(770,380)):
+		return 1
+	if in_patch(p,Vector2(1060,390),Vector2(260,200)):
+		return 2
+	if in_patch(p,Vector2(1160,450),Vector2(480,300)):
+		return 1
+	if in_patch(p,Vector2(1100,2910),Vector2(530,260)):
+		return 1
+	if in_patch(p,Vector2(2850,2870),Vector2(450,220)):
+		return 1
 	if in_patch(p, Vector2(3850, 880), Vector2(220, 260)):
 		return 3
 	if in_patch(p, Vector2(3700, 1020), Vector2(370, 390)):

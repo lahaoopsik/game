@@ -79,6 +79,11 @@ func _ready() -> void:
 	load_world(false)
 	rebuild_obstacles()
 	get_tree().auto_accept_quit = false
+	var wildlife = preload("res://scripts/creature_population.gd").new()
+	wildlife.world = self
+	add_child(wildlife)
+	if indoors:
+		wildlife.hide()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if interface.is_modal_open():

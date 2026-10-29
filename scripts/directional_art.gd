@@ -19,6 +19,13 @@ static func sheet_frame(path: String, column: int, row: int, columns: int, rows:
 	var texture: Texture2D = load(path)
 	if not source_images.has(path):
 		source_images[path]=texture.get_image()
+		if path.ends_with("creatures-v1.png"):
+			var clean: Image=source_images[path]
+			for y in range(clean.get_height()):
+				for x in range(clean.get_width()):
+					var pixel=clean.get_pixel(x,y)
+					if pixel.a<0.4:
+						clean.set_pixel(x,y,Color.TRANSPARENT)
 	var source: Image = source_images[path]
 	var cell_size = Vector2i(source.get_width() / columns, source.get_height() / rows)
 	var scale_key = "%s:%d:%s" % [path,row,native]

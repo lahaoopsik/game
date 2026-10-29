@@ -25,12 +25,13 @@ window/size/viewport_height=800
 window/stretch/mode="canvas_items"
 window/stretch/scale_mode="integer"
 
+[gui]
+
+theme/custom="res://assets/fonts/pixel-theme.tres"
+
 [rendering]
 
-renderer/rendering_method="gl_compatibility"
 textures/canvas_textures/default_texture_filter=0
-2d/snap/snap_2d_transforms_to_pixel=true
+renderer/rendering_method="gl_compatibility"
 environment/defaults/default_clear_color=Color(0.32, 0.51, 0.31, 1)
-
-[gui]
-theme/custom="res://assets/fonts/pixel-theme.tres"
+2d/snap/snap_2d_transforms_to_pixel=true
