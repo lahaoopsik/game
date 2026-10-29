@@ -4,9 +4,12 @@ namespace SunnyValley {
  public static class BlockArt {
   static readonly Dictionary<string,Sprite> sprites=new Dictionary<string,Sprite>();
   static Sprite Rect(string name,int x,int y,int w,int h){string key=name+":"+x+":"+y;if(sprites.TryGetValue(key,out var s))return s;var t=Resources.Load<Texture2D>("Blocks/"+name);t.filterMode=FilterMode.Point;s=Sprite.Create(t,new Rect(x,t.height-y-h,w,h),new Vector2(.5f,0),100,0,SpriteMeshType.FullRect);sprites[key]=s;return s;}
-  public static Sprite Floor(int kind,int v)=>Rect("floors",v*24,kind*24,24,24);
-  public static Sprite Wall(int material,int v,bool face)=>Rect("walls",v*24,material*40+(face?24:0),24,face?16:24);
-  public static Sprite Rim(int v)=>Rect("grass-edge",v*24,0,24,8);
+  public static Sprite Floor(int kind,int v)=>Rect("floors-v2",v*24,kind*24,24,24);
+  public static Sprite Bed(bool wet,int v)=>Rect("beds-v1",v*24,(wet?1:0)*24,24,24);
+  // A raised terrace is grass on top with a soil-and-root bank beneath it.
+  // It should read as a natural earth ledge, never as stacked masonry.
+  public static Sprite Wall(int material,int v,bool face)=>face?Rect("floors-v2",v*24,3*24+8,24,16):Floor(0,v);
+  public static Sprite Rim(int v)=>Rect("grass-rim-v2",v*24,0,24,8);
   public static void InstallMap(WorldData data){var t=new Texture2D(data.width,data.height,TextureFormat.RGBA32,false,true);t.filterMode=FilterMode.Point;t.wrapMode=TextureWrapMode.Clamp;var p=new Color32[data.width*data.height];foreach(var c in data.cells)p[(data.height-c.y-1)*data.width+c.x]=new Color32((byte)(c.kind==7?255:0),0,0,255);t.SetPixels32(p);t.Apply();Shader.SetGlobalTexture("_ValleyTerrainMap",t);Shader.SetGlobalVector("_ValleyMapSize",new Vector4(data.width*48,data.height*48,data.width,data.height));}
  }
  public class WaterReflections {

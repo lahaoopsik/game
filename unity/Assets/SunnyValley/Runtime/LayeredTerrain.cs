@@ -17,7 +17,7 @@ namespace SunnyValley {
    foreach(var cell in state.World.cells){Vector2 p=new Vector2(cell.x*48+24,cell.y*48+48);var plane=TerrainRules.Plane(cell);
     if(plane==TerrainPlane.Lower){var v=Add(lower,"Lower water "+cell.x+":"+cell.y,water,p+new Vector2(0,16),new Vector2(48,48),-12000);v.renderer.sharedMaterial=waterMaterial;}
     else {
-     int variant=(cell.x*13+cell.y*7)%4;int mat=cell.kind==5?1:(cell.kind==6?2:0);Sprite top=BlockArt.Floor(cell.kind,variant);
+     int variant=(cell.x*13+cell.y*7)%4;int mat=cell.kind==5?1:(cell.kind==6?2:0);Sprite top=cell.kind==4?BlockArt.Bed(cell.wet,variant):BlockArt.Floor(cell.kind,variant);
      if(plane==TerrainPlane.Wall){Add(wall,"Wall cap "+cell.x+":"+cell.y,BlockArt.Wall(mat,variant,false),p-new Vector2(0,24),new Vector2(48,48),Mathf.RoundToInt(p.y));var below=state.CellAt(new Vector2(p.x,p.y+1));if(below==null||TerrainRules.Plane(below)!=TerrainPlane.Wall){var face=Add(wall,"Wall face",BlockArt.Wall(mat,variant,true),p+new Vector2(0,8),new Vector2(48,32),Mathf.RoundToInt(p.y)+1);face.renderer.color=new Color(.66f,.63f,.53f);}}
      else Add(floor,"Floor "+cell.x+":"+cell.y,top,p,new Vector2(48,48),-10000);
      var south=state.CellAt(new Vector2(p.x,p.y+1));if(cell.kind==0&&plane==TerrainPlane.Floor&&south!=null&&south.kind!=0)Add(floor,"Grass neighbour rim",BlockArt.Rim(variant),p+new Vector2(0,12),new Vector2(48,16),-8000);if(south!=null&&TerrainRules.Plane(south)==TerrainPlane.Lower&&plane==TerrainPlane.Floor){var bank=Add(floor,"Lower shore face",stone,p+new Vector2(0,16),new Vector2(48,16),-9000);bank.renderer.color=new Color(.6f,.53f,.4f);}

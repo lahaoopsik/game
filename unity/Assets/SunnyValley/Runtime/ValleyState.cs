@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 namespace SunnyValley {
- [Serializable] public class Cell {public int x,y,kind,height; public bool ramp;}
+ [Serializable] public class Cell {public int x,y,kind,height; public bool ramp,wet;}
  [Serializable] public class TreeData {public int id,hp; public float x,y;}
  [Serializable] public class GrassData {public string id; public int variant; public float x,y;}
  [Serializable] public class PropData {public string id,family,location="outside";public int variant,rotation;public float x,y;}
  [Serializable] public class TentData {public int variant;public float x,y;}
  [Serializable] public class Position {public float x,y; public Vector2 V=>new Vector2(x,y);public Position(){} public Position(Vector2 v){x=v.x;y=v.y;}}
- [Serializable] public class WorldData {public int width,height,seed,generatorVersion,basinCount;public Position lake;public Cell[] cells;public TreeData[] trees;public GrassData[] grass;public PropData[] decorations;public TentData[] tents;public Position bridge;}
+ [Serializable] public class WorldData {public int width,height,seed,generatorVersion,basinCount;public Position lake;public Cell[] cells;public TreeData[] trees;public GrassData[] grass;public PropData[] decorations,scenery,crops;public TentData[] tents;public Position bridge;}
  [Serializable] public class Stack {public string item;public int count;public Stack(string i,int n){item=i;count=n;}}
  [Serializable] public class Inventory {
   public Stack[] hotbar=new Stack[9],pocket=new Stack[6];
@@ -29,7 +29,7 @@ namespace SunnyValley {
   public ValleyState(WorldData world){World=world;Save=new SaveData{seed=world.seed,generatorVersion=world.generatorVersion};Save.trees.AddRange(JsonUtility.FromJson<WorldData>(JsonUtility.ToJson(world)).trees);Save.decorations.AddRange(JsonUtility.FromJson<WorldData>(JsonUtility.ToJson(world)).decorations);}
   public Cell CellAt(Vector2 p){int x=Mathf.FloorToInt(p.x/48),y=Mathf.FloorToInt(p.y/48);if(x<0||y<0||x>=World.width||y>=World.height)return null;return World.cells[y*World.width+x];}
   public bool Bridge(Vector2 p)=>Mathf.Abs(p.x-World.bridge.x)<120&&Mathf.Abs(p.y-World.bridge.y)<38;
-  public static bool Portable(string family,int variant)=>family=="micro"?variant>=0&&variant<16&&(variant<8||variant>13):family=="bench"||family=="torch"||family=="lamp"||family=="fence"||(family=="camp"&&variant>=4&&variant<=7);
+  public static bool Portable(string family,int variant)=>family=="micro"?variant>=0&&variant<16&&(variant<8||variant>13):family=="flower"||family=="stump"||family=="deposit"||family=="bench"||family=="torch"||family=="lamp"||family=="fence"||(family=="camp"&&variant>=4&&variant<=7);
   public bool Walkable(Vector2 from,Vector2 p){
    if(Room!="outside"){Vector2 q=(p-new Vector2(480,330))/new Vector2(410,250);return q.sqrMagnitude<1||(Mathf.Abs(p.x-480)<45&&p.y>520&&p.y<610);}
    var a=CellAt(from);var b=CellAt(p);if(a==null||b==null||p.x<20||p.y<20||p.x>4156||p.y>3100)return false;if(!TerrainRules.Walkable(b,Bridge(p)))return false;
@@ -46,6 +46,7 @@ namespace SunnyValley {
     for(int i=0;i<Save.decorations.Count;i++){var d=Save.decorations[i];if(d.location!=Room||!Portable(d.family,d.variant)||Vector2.Distance(target,new Vector2(d.x,d.y))>24||Vector2.Distance(actor,new Vector2(d.x,d.y))>110)continue;if(!Save.inventory.Add("prop:"+d.family+":"+d.variant,1))return "Нет места";Save.decorations.RemoveAt(i);return "Предмет разобран";}
     if(Room!="outside")return "Здесь нечего разбирать";
     for(int i=0;i<Save.trees.Count;i++){var t=Save.trees[i];Vector2 p=new Vector2(t.x,t.y);if(Vector2.Distance(actor,p)>110||Vector2.Distance(target,p)>65)continue;t.hp--;if(t.hp<=0){if(!Save.inventory.Add("wood",5)){t.hp=1;return "Нет места";}Save.trees.RemoveAt(i);return "+5 древесины";}return "Удар · осталось "+t.hp;}
+    if(World.scenery!=null)foreach(var d in World.scenery){if(d.location!=Room||Save.clearedGrass.Contains(d.id)||Vector2.Distance(actor,new Vector2(d.x,d.y))>110||Vector2.Distance(target,new Vector2(d.x,d.y))>24)continue;string resource=d.family=="deposit"?new[]{"stone","iron","coal","crystal"}[Mathf.Clamp(d.variant,0,3)]:"prop:"+d.family+":"+d.variant;if(!Save.inventory.Add(resource,1))return "Нет места";Save.clearedGrass.Add(d.id);return d.family=="stump"?"Пень убран":d.family=="flower"?"Цветок собран":"Ресурс добыт";}
     foreach(var g in World.grass)if(!Save.clearedGrass.Contains(g.id)&&Vector2.Distance(actor,new Vector2(g.x,g.y))<110&&Vector2.Distance(target,new Vector2(g.x,g.y))<24){Save.clearedGrass.Add(g.id);return "Трава срезана";}
     return "Подойди ближе";
    }
