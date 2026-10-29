@@ -3,9 +3,7 @@ const Layout = preload("res://scripts/valley_layout.gd")
 const Art = preload("res://scripts/art.gd")
 
 func _draw() -> void:
-	var grass_source = preload("res://assets/art/grass-clumps-v1.png")
-	var crop_source = Rect2(grass_source.get_width() * 0.5, grass_source.get_height() * 0.60, grass_source.get_width() * 0.25, grass_source.get_height() * 0.40)
-	var crop = Art.pixel_texture(grass_source, crop_source, Vector2i(12, 10))
+	var crop=preload("res://assets/art/native/crop.png")
 	for field in Layout.VILLAGE_FIELDS:
 		draw_rect(field.grow(4), Color("927143"))
 		draw_rect(field, Color("9d6d3d"))
@@ -30,14 +28,9 @@ func _draw() -> void:
 		Art.draw_fantasy(self, i, 1, magical_props[i] - Vector2(30, 40), Vector2(60, 48))
 	for y in [220, 410, 670, 780, 1190, 1370, 1580]:
 		var p = Vector2(Layout.river_x(y) + 68, y)
-		for i in range(5):
-			draw_line(p + Vector2(i * 4, 0), p + Vector2(i * 5 - 5, -21 - i % 3 * 6), Color("627e4a"), 2)
-			if i % 2 == 0:
-				draw_rect(Rect2(p + Vector2(i * 5 - 7, -25 - i % 3 * 6), Vector2(4, 8)), Color("956b48"))
+		Art.draw_native(self,Art.prop_texture("micro",12),p-Vector2(16,40),Vector2(32,56),Color.WHITE)
 
-func draw_rock(p: Vector2, size: float) -> void:
-	draw_set_transform(p, 0, Vector2.ONE * size)
-	draw_colored_polygon(PackedVector2Array([Vector2(-16, 5), Vector2(-19, -5), Vector2(-10, -18), Vector2(9, -20), Vector2(21, -7), Vector2(17, 8)]), Color("7d8f80"))
-	draw_colored_polygon(PackedVector2Array([Vector2(-17, -5), Vector2(-8, -16), Vector2(8, -17), Vector2(15, -7), Vector2(0, -4)]), Color("b4bca2"))
-	draw_line(Vector2(-14, 5), Vector2(16, 8), Color("64764f"), 4)
-	draw_set_transform(Vector2.ZERO)
+func draw_rock(p: Vector2,size: float) -> void:
+	var texture=preload("res://assets/art/native/rock.png")
+	var pixels=texture.get_size()*2
+	draw_texture_rect(texture,Rect2(p-Vector2(pixels.x/2,pixels.y-6),pixels),false)

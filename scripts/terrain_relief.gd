@@ -9,9 +9,9 @@ var time=0.0
 func _ready() -> void:
  texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
  z_index=-2
- var source: Texture2D=load("res://assets/art/cliffs-v1.png")
+ var source: Texture2D=load("res://assets/art/native/cliffs.png")
  for i in range(8):
-  tiles.append(Art.pixel_texture(source,Rect2(Vector2(i%4,i/4)*source.get_size()/Vector2(4,2),source.get_size()/Vector2(4,2)).grow(-6),Vector2i(24,24)))
+  tiles.append(Art.pixel_texture(source,Rect2(Vector2(i%4,i/4)*source.get_size()/Vector2(4,2),source.get_size()/Vector2(4,2)),Vector2i(24,24)))
  for y in range(terrain.SIZE.y-1):
   for x in range(terrain.SIZE.x-1):
    var current=terrain.elevation_at(Vector2i(x,y))

@@ -61,7 +61,7 @@ func _process(delta: float) -> void:
 func _draw() -> void:
 	if summon_age < 1.0:
 		var phase = 0 if progress<0.2 else (1 if progress<0.52 else (2 if progress<0.74 else 3))
-		var frame = Directional.sheet_frame("res://assets/art/axe-directional-v3.png",phase,Directional.direction_index(direction),4,4,Vector2i(24,28))
+		var frame = Directional.sheet_frame("res://assets/art/native/axe.png",phase,Directional.direction_index(direction),4,4,Vector2i(24,28))
 		var windup = Vector2(30 if direction.x>=0 else -30,-30)-direction*10
 		var strike = Vector2(0,-18)+direction*target_distance
 		var point = windup.lerp(strike,smoothstep(0.36,0.64,progress))

@@ -2,6 +2,7 @@ shader_type canvas_item;
 uniform sampler2D control_map : filter_nearest, repeat_disable;
 uniform sampler2D ground_atlas : source_color, filter_nearest, repeat_enable;
 uniform sampler2D grass_texture : source_color, filter_nearest, repeat_enable;
+uniform sampler2D water_texture : source_color, filter_nearest, repeat_enable;
 uniform vec2 grid_size = vec2(50.0, 38.0);
 uniform vec2 world_size = vec2(2400.0, 1800.0);
 uniform vec2 sun_direction = vec2(-0.7, 0.7);
@@ -14,19 +15,15 @@ float height_at(vec2 cell) {
 }
 vec4 ground(float kind, vec2 p) {
 	if (kind < 0.5) {
-		float patch = sin(p.x * 0.006) * sin(p.y * 0.004) * 0.018;
-		vec3 turf = vec3(0.36, 0.65, 0.28) + patch;
-		vec2 pixel = floor(p / 4.0);
-		float grain = step(47.0, mod(pixel.x * 7.0 + pixel.y * 13.0, 51.0));
-		return vec4(turf + grain * vec3(0.025, 0.03, 0.012), 1.0);
+		return texture(grass_texture,(mod(floor(p/2.0),24.0)+0.5)/24.0);
 	}
 	if (kind > 6.5) {
-		float ripple = step(0.92, sin(p.y * 0.12 - TIME * 1.2 + sin(p.x * 0.05)));
-		return vec4(vec3(0.27, 0.70, 0.80) + ripple * 0.05, 1.0);
+		vec2 flow=floor(p/2.0)+vec2(floor(TIME*2.0),0.0);
+		return texture(water_texture,(mod(flow,24.0)+0.5)/24.0);
 	}
 	float index = kind - 1.0;
 	vec2 tile = vec2(mod(index, 3.0), floor(index / 3.0));
-	vec2 uv = (tile + 0.015 + fract(p / 150.0) * 0.97) / vec2(3.0, 2.0);
+	vec2 uv = (tile*24.0+mod(floor(p/2.0),24.0)+0.5)/vec2(72.0,48.0);
 	vec4 earth = texture(ground_atlas, uv);
 	earth.rgb *= vec3(1.08, 1.08, 1.04);
 	return earth;

@@ -1,6 +1,6 @@
 extends Node2D
 const Art = preload("res://scripts/art.gd")
-const SOURCE = preload("res://assets/art/goblin-camp-v3.png")
+
 var variant = 0
 var environment: Node
 var sun_direction = Vector2.ZERO
@@ -12,15 +12,8 @@ var native_size: Vector2i
 
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	var dimensions = Vector2(SOURCE.get_size())
-	var column = variant if variant < 4 else variant - 4
-	var left = [0.0, 0.315, 0.513, 0.747][column] if variant < 4 else column / 4.0
-	var right = [0.315, 0.513, 0.747, 1.0][column] if variant < 4 else (column + 1) / 4.0
-	var top = 0.05 if variant < 4 else 0.64
-	var bottom = 0.61 if variant < 4 else 0.98
-	native_size = [Vector2i(96, 80), Vector2i(56, 52), Vector2i(56, 52), Vector2i(56, 48), Vector2i(36, 24), Vector2i(36, 32), Vector2i(48, 30), Vector2i(28, 36)][variant]
-	var source = Rect2(Vector2(left * dimensions.x, top * dimensions.y), Vector2((right - left) * dimensions.x, (bottom - top) * dimensions.y))
-	texture = Art.pixel_texture(SOURCE, source, native_size)
+	texture=load("res://assets/art/native/tent-%d.png" % variant)
+	native_size=texture.get_size()
 
 func _process(delta: float) -> void:
 	time += delta

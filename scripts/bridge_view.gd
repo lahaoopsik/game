@@ -1,6 +1,6 @@
 extends Node2D
 const Art = preload("res://scripts/art.gd")
-const SOURCE = preload("res://assets/art/bridge-v1.png")
+const SOURCE = preload("res://assets/art/native/bridge.png")
 func _ready() -> void:
 	z_index = -2
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST

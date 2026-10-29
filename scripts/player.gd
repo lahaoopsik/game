@@ -51,7 +51,7 @@ func _physics_process(delta: float) -> void:
 		column = 4 if weapon.progress<0.45 else 5
 		if absf(weapon.direction.x)>absf(weapon.direction.y): row=3 if weapon.direction.x<0 else 2
 		else: row=1 if weapon.direction.y<0 else 0
-	var texture = preload("res://scripts/directional_art.gd").sheet_frame("res://assets/art/hero-v3.png",column,row,6,4,Vector2i(32,32))
+	var texture = preload("res://scripts/directional_art.gd").sheet_frame("res://assets/art/native/hero.png",column,row,6,4,Vector2i(32,32))
 	sprite.texture = texture if texture!=null else Art.frame(column%4,1)
 	sprite.flip_h = column<4 and facing.x<0 and absf(facing.x)>absf(facing.y)
 	sprite.position.y = -32

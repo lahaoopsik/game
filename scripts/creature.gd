@@ -30,7 +30,7 @@ func _ready() -> void:
 	texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
 	add_child(sprite)
 	for frame in range(4):
-		animation.append(Frames.sheet_frame("res://assets/art/creatures-v1.png",frame,species,4,4,Vector2i(28,28)))
+		animation.append(Frames.sheet_frame("res://assets/art/native/creatures.png",frame,species,4,4,Vector2i(28,28)))
 	sprite.texture=animation[0]
 	if species==2:
 		glow=PointLight2D.new()

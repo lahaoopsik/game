@@ -9,8 +9,8 @@ var shell: Texture2D
 func _ready() -> void:
 	y_sort_enabled=true
 	texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
-	if ResourceLoader.exists("res://assets/art/tent-interior-v1.png"):
-		var source: Texture2D=load("res://assets/art/tent-interior-v1.png")
+	if ResourceLoader.exists("res://assets/art/native/interior.png"):
+		var source: Texture2D=load("res://assets/art/native/interior.png")
 		shell=Art.pixel_texture(source,Rect2(Vector2.ZERO,source.get_size()),Vector2i(480,320))
 	refresh()
 
