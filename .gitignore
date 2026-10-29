@@ -5,3 +5,11 @@ builds/
 docs/design-original.txt
 assets/art/magic-axe-v1.png
 assets/art/magic-axe-v1.png.import
+
+unity/Library/
+unity/Temp/
+unity/Logs/
+unity/Obj/
+unity/UserSettings/
+unity/Builds/
+

@@ -1,0 +1,11 @@
+# Unity migration
+/Library/
+/Temp/
+/Logs/
+/Obj/
+/UserSettings/
+/Builds/
+*.csproj
+*.sln
+*.slnx
+.vs/

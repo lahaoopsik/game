@@ -1,0 +1,23 @@
+{
+  "tilePixels": 24,
+  "worldTile": 48,
+  "floorKinds": [
+    "grass",
+    "sand",
+    "gravel",
+    "dirt",
+    "tilled soil",
+    "stone",
+    "clay",
+    "water"
+  ],
+  "variants": 4,
+  "wallMaterials": [
+    "earth",
+    "stone",
+    "clay",
+    "moss"
+  ],
+  "wallTopPixels": 24,
+  "wallFacePixels": 16
+}
