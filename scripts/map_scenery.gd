@@ -3,6 +3,18 @@ const Layout = preload("res://scripts/valley_layout.gd")
 const Art = preload("res://scripts/art.gd")
 
 func _draw() -> void:
+	var grass_source = preload("res://assets/art/grass-clumps-v1.png")
+	var crop_source = Rect2(grass_source.get_width() * 0.5, grass_source.get_height() * 0.60, grass_source.get_width() * 0.25, grass_source.get_height() * 0.40)
+	var crop = Art.pixel_texture(grass_source, crop_source, Vector2i(12, 10))
+	for field in Layout.VILLAGE_FIELDS:
+		draw_rect(field.grow(4), Color("927143"))
+		draw_rect(field, Color("9d6d3d"))
+		for row in range(int(field.size.y / 24)):
+			var start = field.position + Vector2(0, row * 24)
+			draw_line(start + Vector2(0, 20), start + Vector2(field.size.x, 20), Color("714f32"), 3)
+			for column in range(int(field.size.x / 32)):
+				var p = start + Vector2(column * 32 + 5, 0)
+				draw_texture_rect(crop, Rect2(p, Vector2(24, 20)), false)
 	for p in Layout.ROCKS:
 		draw_rock(p, 1.0)
 		draw_rock(p + Vector2(22, 11), 0.5)

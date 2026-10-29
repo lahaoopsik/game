@@ -1,3 +1,8 @@
+# Current art revision
+
+Current source set and workflow: prompts-v3.md. Current gameplay and limitations: ../../README.md.
+The following v1 notes are historical and do not describe the current inventory, terrain or animations.
+
 # First dawn — visual direction v1
 
 Original cozy fantasy pixel art. Teal traveler, luminous emerald foliage,

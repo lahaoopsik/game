@@ -1,5 +1,5 @@
 shader_type canvas_item;
-uniform float source_step = 6.0;
+uniform float source_step = 1.0;
 uniform bool foliage = false;
 uniform vec2 sun_direction = vec2(0.0, 1.0);
 varying vec4 item_tint;
