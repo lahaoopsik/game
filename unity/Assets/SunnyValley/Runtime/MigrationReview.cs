@@ -12,7 +12,7 @@ namespace SunnyValley {
    game.player=new Vector2(2120,2140);game.State.Save.phase=.42f;yield return new WaitForSeconds(1);yield return Shot(Path.ChangeExtension(path,"village.png"));
    game.Map=true;yield return new WaitForSeconds(.2f);yield return Shot(Path.ChangeExtension(path,"map.png"));game.Map=false;
    game.Enter();yield return new WaitForSeconds(.2f);yield return Shot(Path.ChangeExtension(path,"interior.png"));game.Leave();
-   if(Time.frameCount<=frame+3)throw new System.Exception("Runtime not advancing");Debug.Log("PASS UNITY RUNTIME: live frames, water/day/night/village/map/interior screenshots saved, seed "+game.State.World.seed+", basins "+game.State.World.basinCount);game.player=original;Destroy(game);Application.Quit();
+   if(Time.frameCount<=frame+3)throw new System.Exception("Runtime not advancing");Debug.Log("PASS UNITY RUNTIME: live frames, water/day/night/village/map/interior screenshots saved, seed "+game.State.World.seed+", basins "+game.State.World.basinCount+", screen "+Screen.width+"x"+Screen.height+", mode "+Screen.fullScreenMode+", viewport "+game.Cam.pixelRect);game.player=original;Destroy(game);Application.Quit();
   }
  }
 }
